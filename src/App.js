@@ -1,24 +1,38 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from 'react';
+import { NewsCard } from './NewsCard';
+import { AppToolbar } from './AppToolbar';
+import CircularProgress from '@material-ui/core/CircularProgress';
+
 
 function App() {
+
+  const [state, setState] = useState({})
+  useEffect(() => {
+    setState({ isLoading: true })
+    fetch("http://newsapi.org/v2/top-headlines?country=in&apiKey=dfcd91fa823d419c81a1cdbbf7f0f68a")
+      .then(res => res.json())
+      .then(({ articles }) => {
+        setState({ isLoading: false, articles })
+      }, (error) => {
+        setState({ isLoading: false, error })
+      })
+  }, [])
+
+  const { articles, isLoading } = state
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div style={{
+      display: 'flex', height: '100vh',
+      alignItems: 'center', justifyContent: 'center'
+    }}>
+      <AppToolbar />
+      {isLoading && <CircularProgress />}
+      <div style={{
+        position:'absolute',
+        padding: 16, top: 40
+      }}>
+        {articles && articles.map((article, index) => (<NewsCard key={`${index}`} article={article} />))}
+      </div>
+
     </div>
   );
 }
