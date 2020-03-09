@@ -20,6 +20,7 @@
     "eject": "react-scripts eject",
     "wizard": "workbox wizard",
     "generateSW": "workbox generateSW"
+   
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -37,6 +38,7 @@
     ]
   },
   "devDependencies": {
+  
     "workbox-webpack-plugin": "^5.0.0"
   }
 }
