@@ -20,11 +20,11 @@ function App() {
 
   useEffect(() => {
 
-    window.addEventListener('beforeinstallprompt', (e) => {
-      console.log('Got install event')
-      e.preventDefault();
-      setInstallEvent(e)
-    });
+    // window.addEventListener('beforeinstallprompt', (e) => {
+    //   console.log('Got install event')
+    //   e.preventDefault();
+    //   setInstallEvent(e)
+    // });
 
     fetchNews()
   }, [category])

@@ -1,26 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
+<script src="https://www.gstatic.com/firebasejs/7.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.10.0/firebase-messaging.js"></script>
+<script src="/fcmconfig.js"></script>
 
 <head>
 
   <script>
+
+    firebase.initializeApp(firebaseConfig);
+    const messaging = firebase.messaging();
+    messaging.usePublicVapidKey("BCr5QZa0YzhST1PGhAGBe-rV1ZIS_orfSUF2oo_1QASxqC4cOpgr-vCVnjHVuNb7VRvTF0_7ud5-UtcueZAMcy0");
+
     if ('serviceWorker' in navigator) {
+
       window.addEventListener('load', function () {
-        navigator.serviceWorker.register('/sw.js').then((reg) => {
+        navigator.serviceWorker.register('/src-sw.js').then((reg) => {
           console.log('Service worker is registered', reg)
+          messaging.useServiceWorker(reg);
+          getFCMToken()
+
         }).catch((error) => console.log('Service worker register failed', error));
       });
     } else {
       console.log('service worker not supported')
+    }
+
+    function getFCMToken() {
+
+      messaging.getToken().then((currentToken) => {
+        if (currentToken) {
+          console.log(currentToken)
+        } else {
+          // Show permission request.
+          console.log('No Instance ID token available. Request permission to generate one.');
+          // Show permission UI.
+        }
+      }).catch((err) => {
+        console.log('An error occurred while retrieving token. ', err);
+      });
     }
   </script>
 
   <meta charset="utf-8" />
   <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  
+
   <meta name="description" content="PWA for latest news" />
-  <meta name="theme-color" content="#00008B"/>
+  <meta name="theme-color" content="#00008B" />
   <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
