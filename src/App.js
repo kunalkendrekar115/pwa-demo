@@ -4,7 +4,7 @@ import { LeftDrawer } from './LeftDrawer';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import FetchError from './FetchError';
 import GenericModal from './GenericModal';
-import { initializeFirebase, getFCMToken, addPushMessageListener } from './fcmconfig'
+import { addPushMessageListener } from './fcmconfig'
 
 function App() {
 
@@ -17,18 +17,13 @@ function App() {
   const { category } = state
 
 
-
-
   useEffect(() => {
 
-    initializeFirebase()
-
-
-    window.addEventListener('beforeinstallprompt', (e) => {
-      console.log('Got install event')
-      e.preventDefault();
-      setInstallEvent(e)
-    });
+    // window.addEventListener('beforeinstallprompt', (e) => {
+    //   console.log('Got install event')
+    //   e.preventDefault();
+    //   setInstallEvent(e)
+    // });
 
     fetchNews()
 
@@ -43,6 +38,9 @@ function App() {
       .then(res => res.json())
       .then(({ articles }) => {
         setState({ ...state, error: null, isLoading: false, articles })
+
+        handleNotification()
+
       }, (error) => {
         setState({ ...state, isLoading: false, error })
       })
@@ -50,15 +48,10 @@ function App() {
 
   const handleNotification = () => {
 
-    getFCMToken()
-      .then((token) => {
-        console.log(token)
-        addPushMessageListener((message) => {
-          alert(message.notification.body)
-        })
 
-      })
-      .catch((err) => console.log(err))
+    addPushMessageListener((message) => {
+      alert(message.notification.body)
+    })
 
   }
   const { articles, isLoading, error } = state
@@ -69,8 +62,10 @@ function App() {
       alignItems: 'center', justifyContent: 'center'
     }}>
       <LeftDrawer
-        onItemClick={(category) => setState({ category })}
-        onNotificationIconClick={handleNotification} />
+        onItemClick={(category) => {
+          if (category !== state.category)
+            setState({ category })
+        }} />
       {isLoading && <CircularProgress />}
       <div style={{
         position: 'absolute',

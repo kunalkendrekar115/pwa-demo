@@ -31,13 +31,23 @@ console.log('this is my custom service worker');
 //         notificationOptions);
 // });
 
-// workbox.precaching.precacheAndRoute(self.__WB_MANIFEST);
-const { routing } = workbox
+workbox.precaching.precacheAndRoute(self.__WB_MANIFEST);
+
+ const { routing } = workbox
 const { StaleWhileRevalidate, NetworkFirst, CacheFirst, NetworkOnly } = workbox.strategies
 
 
 routing.registerRoute(
     'https://newsapi.org/v2/top-headlines?country=in&apiKey=dfcd91fa823d419c81a1cdbbf7f0f68a',
-    new StaleWhileRevalidate({ cacheName: 'top-news' })
+    new NetworkFirst({ cacheName: 'top-news' })
 );
 
+self.addEventListener('fetch', (event) => {
+    const { request } = event;
+
+    const url = new URL(request.url)
+    if (url.origin === "https://newsapi.org") {
+        event.respondWith(new StaleWhileRevalidate({ cacheName: 'categories-news' })
+            .handle({ event, request }));
+    }
+});

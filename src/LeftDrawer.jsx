@@ -28,7 +28,7 @@ const useStyles = makeStyles(theme => ({
 
 
 
-export function LeftDrawer({ onItemClick ,onNotificationIconClick}) {
+export function LeftDrawer({ onItemClick }) {
 
     const classes = useStyles();
 
@@ -72,7 +72,7 @@ export function LeftDrawer({ onItemClick ,onNotificationIconClick}) {
                     </Typography>
 
                     <IconButton edge="end" className={classes.menuButton} color="inherit" aria-label="notification"
-                        onClick={() => onNotificationIconClick()}>
+                        onClick={() => { }}>
                         <NotificationsIcon />
                     </IconButton>
                 </Toolbar>
