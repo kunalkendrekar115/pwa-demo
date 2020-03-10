@@ -10,7 +10,7 @@
 
     firebase.initializeApp(firebaseConfig);
     const messaging = firebase.messaging();
-    messaging.usePublicVapidKey("BCr5QZa0YzhST1PGhAGBe-rV1ZIS_orfSUF2oo_1QASxqC4cOpgr-vCVnjHVuNb7VRvTF0_7ud5-UtcueZAMcy0");
+    messaging.usePublicVapidKey(FCM_PUBLIC_KEY);
 
     if ('serviceWorker' in navigator) {
 
@@ -40,6 +40,12 @@
         console.log('An error occurred while retrieving token. ', err);
       });
     }
+
+    messaging.onMessage(function (payload) {
+      console.log("Received Messages in forground", payload);
+      alert(payload.notification.body)
+    });
+
   </script>
 
   <meta charset="utf-8" />
