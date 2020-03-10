@@ -4,7 +4,7 @@ import { LeftDrawer } from './LeftDrawer';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import FetchError from './FetchError';
 import GenericModal from './GenericModal';
-
+import { initializeFirebase, getFCMToken, addPushMessageListener } from './fcmconfig'
 
 function App() {
 
@@ -16,17 +16,22 @@ function App() {
   const [installEvent, setInstallEvent] = useState(null)
   const { category } = state
 
-  
+
+
 
   useEffect(() => {
 
-    // window.addEventListener('beforeinstallprompt', (e) => {
-    //   console.log('Got install event')
-    //   e.preventDefault();
-    //   setInstallEvent(e)
-    // });
+    initializeFirebase()
+
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      console.log('Got install event')
+      e.preventDefault();
+      setInstallEvent(e)
+    });
 
     fetchNews()
+
   }, [category])
 
   const fetchNews = () => {
@@ -42,6 +47,20 @@ function App() {
         setState({ ...state, isLoading: false, error })
       })
   }
+
+  const handleNotification = () => {
+
+    getFCMToken()
+      .then((token) => {
+        console.log(token)
+        addPushMessageListener((message) => {
+          alert(message.notification.body)
+        })
+
+      })
+      .catch((err) => console.log(err))
+
+  }
   const { articles, isLoading, error } = state
 
   return (
@@ -50,7 +69,8 @@ function App() {
       alignItems: 'center', justifyContent: 'center'
     }}>
       <LeftDrawer
-        onItemClick={(category) => setState({ category })} />
+        onItemClick={(category) => setState({ category })}
+        onNotificationIconClick={handleNotification} />
       {isLoading && <CircularProgress />}
       <div style={{
         position: 'absolute',

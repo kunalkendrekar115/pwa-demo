@@ -1,51 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
-<script src="https://www.gstatic.com/firebasejs/7.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/7.10.0/firebase-messaging.js"></script>
-<script src="/fcmconfig.js"></script>
 
 <head>
 
   <script>
 
-    firebase.initializeApp(firebaseConfig);
-    const messaging = firebase.messaging();
-    messaging.usePublicVapidKey(FCM_PUBLIC_KEY);
-
     if ('serviceWorker' in navigator) {
 
       window.addEventListener('load', function () {
         navigator.serviceWorker.register('/src-sw.js').then((reg) => {
-          console.log('Service worker is registered', reg)
-          messaging.useServiceWorker(reg);
-          getFCMToken()
-
+        
+         console.log('Service worker is registered', reg)
+  
         }).catch((error) => console.log('Service worker register failed', error));
       });
     } else {
       console.log('service worker not supported')
     }
 
-    function getFCMToken() {
-
-      messaging.getToken().then((currentToken) => {
-        if (currentToken) {
-          console.log(currentToken)
-        } else {
-          // Show permission request.
-          console.log('No Instance ID token available. Request permission to generate one.');
-          // Show permission UI.
-        }
-      }).catch((err) => {
-        console.log('An error occurred while retrieving token. ', err);
-      });
-    }
-
-    messaging.onMessage(function (payload) {
-      console.log("Received Messages in forground", payload);
-      alert(payload.notification.body)
-    });
-
+  
   </script>
 
   <meta charset="utf-8" />

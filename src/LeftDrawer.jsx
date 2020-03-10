@@ -5,6 +5,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
+import NotificationsIcon from '@material-ui/icons/Notifications';
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -27,7 +28,7 @@ const useStyles = makeStyles(theme => ({
 
 
 
-export function LeftDrawer({ onItemClick }) {
+export function LeftDrawer({ onItemClick ,onNotificationIconClick}) {
 
     const classes = useStyles();
 
@@ -65,9 +66,15 @@ export function LeftDrawer({ onItemClick }) {
                         onClick={() => toggleDrawer(true)}>
                         <MenuIcon />
                     </IconButton>
+
                     <Typography variant="h6" className={classes.title}>
                         {category}
                     </Typography>
+
+                    <IconButton edge="end" className={classes.menuButton} color="inherit" aria-label="notification"
+                        onClick={() => onNotificationIconClick()}>
+                        <NotificationsIcon />
+                    </IconButton>
                 </Toolbar>
             </AppBar>
             <Drawer open={isDrawerOpen} onClose={() => toggleDrawer(false)}>
