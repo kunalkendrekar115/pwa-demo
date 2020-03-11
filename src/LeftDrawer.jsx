@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
+import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import NotificationsIcon from '@material-ui/icons/Notifications';
@@ -13,6 +14,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
+import Switch from '@material-ui/core/Switch';
 
 const useStyles = makeStyles(theme => ({
     menuButton: {
@@ -28,7 +30,7 @@ const useStyles = makeStyles(theme => ({
 
 
 
-export function LeftDrawer({ onItemClick }) {
+export function LeftDrawer({ onItemClick, isNotificationEnabled, toggleNotification }) {
 
     const classes = useStyles();
 
@@ -54,7 +56,16 @@ export function LeftDrawer({ onItemClick }) {
                     </ListItem>
                 ))}
             </List>
+            <Divider />
 
+            <ListItem key={'notification'}>
+                <ListItemText primary={'Notification'} />
+                <Switch checked={isNotificationEnabled} onChange={(event) => {
+                    toggleNotification(event)
+                    setTimeout(() => toggleDrawer(false), 1000)
+                }} value="notifications" />
+
+            </ListItem>
         </div>
     );
 

@@ -4,7 +4,7 @@ import { LeftDrawer } from './LeftDrawer';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import FetchError from './FetchError';
 import GenericModal from './GenericModal';
-import { addPushMessageListener } from './fcmconfig'
+import {  getFCMToken, addPushMessageListener } from './fcmconfig'
 
 function App() {
 
@@ -39,20 +39,27 @@ function App() {
       .then(({ articles }) => {
         setState({ ...state, error: null, isLoading: false, articles })
 
-        handleNotification()
-
       }, (error) => {
         setState({ ...state, isLoading: false, error })
       })
   }
 
-  const handleNotification = () => {
+  const handleNotification = (event) => {
 
+    if (event.target.checked) {
 
-    addPushMessageListener((message) => {
-      alert(message.notification.body)
-    })
+    
+      getFCMToken()
+        .then((token) => {
 
+          console.log('FCM Token', token)
+
+          addPushMessageListener((message) => {
+            alert(message.notification.body)
+          })
+
+        }).catch((err) => console.log(err))
+    }
   }
   const { articles, isLoading, error } = state
 
@@ -65,7 +72,8 @@ function App() {
         onItemClick={(category) => {
           if (category !== state.category)
             setState({ category })
-        }} />
+        }}
+        toggleNotification={handleNotification} />
       {isLoading && <CircularProgress />}
       <div style={{
         position: 'absolute',

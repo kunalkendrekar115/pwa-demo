@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import { initializeFirebase, getFCMToken } from './fcmconfig'
+import { initializeFirebase } from './fcmconfig'
 
 ReactDOM.render(<App />, document.getElementById('root'));
 
@@ -13,7 +13,3 @@ ReactDOM.render(<App />, document.getElementById('root'));
 //serviceWorker.unregister();
 
 initializeFirebase()
-
-getFCMToken()
-    .then((token) => { console.log(token) })
-    .catch((err) => console.log(err))
