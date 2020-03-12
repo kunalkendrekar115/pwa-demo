@@ -31,23 +31,49 @@ console.log('this is my custom service worker');
 //         notificationOptions);
 // });
 
-workbox.precaching.precacheAndRoute(self.__WB_MANIFEST);
+const { setCacheNameDetails } = workbox.core;
 
- const { routing } = workbox
+const CACHE_VERSION = 'v4'
+
+setCacheNameDetails({
+    prefix: 'news-app',
+    precache: 'app-shell',
+    suffix: CACHE_VERSION
+});
+
+ workbox.precaching.precacheAndRoute(self.__WB_MANIFEST);
+
+
+const { routing } = workbox
 const { StaleWhileRevalidate, NetworkFirst, CacheFirst, NetworkOnly } = workbox.strategies
 
 
 routing.registerRoute(
     'https://newsapi.org/v2/top-headlines?country=in&apiKey=dfcd91fa823d419c81a1cdbbf7f0f68a',
-    new NetworkFirst({ cacheName: 'top-news' })
+    new NetworkFirst({ cacheName: `top-news-${CACHE_VERSION}` })
 );
 
+self.addEventListener('activate', function (event) {
+    console.log('Service worker activated')
+
+    caches.keys().then(function (cacheNames) {
+        return Promise.all(
+            cacheNames.filter(function (cacheName) {
+                return !(cacheName.endsWith(CACHE_VERSION))
+            }).map(function (cacheName) {
+                console.log(cacheName);
+                return caches.delete(cacheName);
+            })
+        );
+    })
+})
 self.addEventListener('fetch', (event) => {
     const { request } = event;
 
     const url = new URL(request.url)
     if (url.origin === "https://newsapi.org") {
-        event.respondWith(new StaleWhileRevalidate({ cacheName: 'categories-news' })
+        event.respondWith(new StaleWhileRevalidate({ cacheName: `categories-news-${CACHE_VERSION}` })
             .handle({ event, request }));
     }
 });
+

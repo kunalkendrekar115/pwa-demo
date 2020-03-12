@@ -4,7 +4,7 @@ import { LeftDrawer } from './LeftDrawer';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import FetchError from './FetchError';
 import GenericModal from './GenericModal';
-import {  getFCMToken, addPushMessageListener } from './fcmconfig'
+import { getFCMToken, addPushMessageListener } from './fcmconfig'
 
 function App() {
 
@@ -48,19 +48,34 @@ function App() {
 
     if (event.target.checked) {
 
-    
       getFCMToken()
         .then((token) => {
-
           console.log('FCM Token', token)
-
-          addPushMessageListener((message) => {
-            alert(message.notification.body)
-          })
-
+          sendFCMToken(token)
         }).catch((err) => console.log(err))
     }
   }
+
+  const sendFCMToken = (token) => {
+
+    fetch(" https://fcmdemo-d37f6.firebaseio.com/message_list.json", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ token })
+    }).then(res => res.json())
+      .then((response) => {
+        alert("Token updated Successfully\n" + response.name)
+        addPushMessageListener((message) => {
+          alert(message.notification.body)
+        })
+      }, (error) => {
+        console.log(error)
+        alert(JSON.stringify(error))
+      })
+  }
+
   const { articles, isLoading, error } = state
 
   return (
