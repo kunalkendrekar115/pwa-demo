@@ -20,8 +20,7 @@ steps:
     npm run build
   displayName: 'npm install, test and build'
 
-- task: PublishBuildArtifacts@1
+- task: PublishPipelineArtifact@1
   inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    ArtifactName: 'drop'
-    publishLocation: 'Container'
+    path: $(System.DefaultWorkingDirectory)/bin/WebApp
+    artifact: WebApp
